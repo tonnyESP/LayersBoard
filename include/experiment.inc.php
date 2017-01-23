@@ -207,7 +207,7 @@ class Experiment
     ** Fetches all experiments.
     ** @param $id            dataset ID to fetch.
     */
-    public static function FetchAllMine()
+    public static function FetchAllFinished()
     {
         global $mysqli;
         global $user_id;
@@ -223,20 +223,96 @@ class Experiment
             while ($data = $result->fetch_object()) 
             {
                 $experiment = new Experiment($data);
-                $experiment->Render();
+                $stats = $experiment->GetJsonFromLog();
+                
+                if($experiment->total_epocs > 0)
+                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
+                else
+                    $percent_finished = 0;
+
+                if($percent_finished == 100)
+                    $experiment->Render();
             }
-            array_push($toReturn, $data);
         }
 
         return $toReturn;
     }
 
+        /*
+    ** Fetches all experiments.
+    ** @param $id            dataset ID to fetch.
+    */
+    public static function FetchAllNotStarted()
+    {
+        global $mysqli;
+        global $user_id;
+
+        $toReturn = [];
+
+        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id";
+
+        // Validate results
+        if ($result = $mysqli->query($query)) 
+        {
+            // Retreive results.
+            while ($data = $result->fetch_object()) 
+            {
+                $experiment = new Experiment($data);
+                $stats = $experiment->GetJsonFromLog();
+                
+                if($experiment->total_epocs > 0)
+                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
+                else
+                    $percent_finished = 0;
+
+                if($percent_finished == 0)
+                    $experiment->Render();
+            }
+        }
+
+        return $toReturn;
+    }
+        /*
+    ** Fetches all experiments.
+    ** @param $id            dataset ID to fetch.
+    */
+    public static function FetchAllNotFinished()
+    {
+        global $mysqli;
+        global $user_id;
+
+        $toReturn = [];
+
+        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id";
+
+        // Validate results
+        if ($result = $mysqli->query($query)) 
+        {
+            // Retreive results.
+            while ($data = $result->fetch_object()) 
+            {
+                $experiment = new Experiment($data);
+                $stats = $experiment->GetJsonFromLog();
+                
+                if($experiment->total_epocs > 0)
+                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
+                else
+                    $percent_finished = 0;
+
+                if($percent_finished > 0 && $percent_finished < 100)
+                    $experiment->Render();
+                
+            }
+        }
+
+        return $toReturn;
+    }
     public function Render()
     {
         $data = $this->GetJsonFromLog();
         ?>
-        <div class="col-md-3">
-            <label style="text-align:center">
+        <div class="experiment-short col-md-3">
+            <label>
             <span><?=$this->current_epocs;?> of <?=$this->total_epocs;?></span>
             <br/>
             <a href="index.php?experiment_id=<?=$this->id;?>"><?=$this->name;?></a>
@@ -284,7 +360,8 @@ class Experiment
 
 
         $archivoLog = $experiment_path."/netlog.log";
-        @$contenido = file_get_contents($archivoLog);
+        if(! @$contenido = file_get_contents($archivoLog))
+            return;
         $file = fopen($archivoLog, "r") 
                 or die('<div class="alert alert-danger"><a class="close" data-dismiss="alert" href="#">&times;</a><p style="text-align:center">Unable to open file!</p></div>');
         //Output a line of the file until the end is reached
@@ -385,7 +462,7 @@ class Experiment
 
         $archivoLog = $experiment_path."/netlog.log";
         if(! @$contenido = file_get_contents($archivoLog))
-            return;
+            return "{}";
         $file = fopen($archivoLog, "r") 
                 or die('<div class="alert alert-danger"><a class="close" data-dismiss="alert" href="#">&times;</a><p style="text-align:center">Unable to open file!</p></div>');
 
@@ -498,16 +575,27 @@ class Experiment
         {
             // Updates information about epocs percent
             $json = $this->GetJsonFromLog();
-
-            $percent_finished = ($this->current_epocs / $this->total_epocs) * 100;
+            if($this->total_epocs > 0)
+                $percent_finished = ($this->current_epocs / $this->total_epocs) * 100;
+            else
+                $percent_finished = 0;
 
             $experimentIsFinished = false;
+
+            if($percent_finished == 100)
+                $experimentIsFinished = true;
+
+            if($experimentIsFinished)
+            {
         ?>
+
           <div class="alert alert-info">
             <a class="close" data-dismiss="alert" href="#">&times;</a>
-            <p style="text-align:center">This experiment has not finished yet </p>
+            <p style="text-align:center">This experiment has finished already, you can rerun it or fork it </p>
           </div>
         <?php
+            }
+
             if(IsLayersRunning()==0)
             {
         ?>
@@ -526,6 +614,7 @@ class Experiment
 
         <?php
         }
+
         ?>
               <div id="d3chart" style="text-align:center">
               <h3>Errors</h3>
@@ -535,7 +624,7 @@ class Experiment
                 <div class="col-md-6">
                   <div class="shell-wrap">
                     <p class="shell-top-bar">Current net </p>
-                    <pre><code data-language="c" id="full_netcode" style="font-size:0.8em"><?=$this->RenderCurrentNet();?>     
+                    <pre><code data-language="c" id="full_netcode" style="font-size:0.8em"><?=$this->RenderCurrentNet();?>
                     </code></pre>
                   </div>
                 </div>

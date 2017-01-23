@@ -11,12 +11,34 @@ require("include/template/header.inc.php");
     $experiment = new Experiment($exp_id);
     $experiment->FullRender();
     include_once("include/template/scripts.index.inc.php");
-
   }
   else
   {
+    ?>
+
+    <div class="row">
+        <h3>Finished experiments</h3>
+
+    <?php
     // List all experiment
-    Experiment::FetchAllMine();
+    Experiment::FetchAllFinished();
+    ?>
+    </div>
+    <div class="row">
+      <h3>Not started experiments</h3>
+    <?php
+    // List all experiment
+    Experiment::FetchAllNotStarted();
+    ?>
+    </div> 
+    <div class="row">
+      <h3>Not started experiments</h3>
+    <?php
+    // List all experiment
+    Experiment::FetchAllNotFinished();
+    ?>
+    </div>    
+    <?php
   }
 
 ?>
