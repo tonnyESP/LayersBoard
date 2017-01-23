@@ -1,30 +1,24 @@
 <?php
 require("include/template/header.inc.php");
-?>
 
-<?php
-
-
-  $exp_id = (int) 0;
   if( isset($_GET["experiment_id"]))
   {
     $exp_id = (int) $_GET["experiment_id"];
-  }
 
-  // Load current experiment based on GET url paramter
-  $currentExperiment = new Experiment($exp_id);
- 
-  $experimentIsFinished = true;
+    // Load current experiment based on GET url paramter
+    $currentExperiment = new Experiment($exp_id);
+   
+    $experimentIsFinished = true;
 
-  // If we don't get the best_result in test for this experiment
-  if( !isset($currentExperiment->best_result_test))
-  {
-    // Updates information about epocs percent
-    $json = $currentExperiment->GetJsonFromLog();
+    // If we don't get the best_result in test for this experiment
+    if( !isset($currentExperiment->best_result_test))
+    {
+      // Updates information about epocs percent
+      $json = $currentExperiment->GetJsonFromLog();
 
-    $percent_finished = ($currentExperiment->current_epocs / $currentExperiment->total_epocs) * 100;
+      $percent_finished = ($currentExperiment->current_epocs / $currentExperiment->total_epocs) * 100;
 
-    $experimentIsFinished = false;
+      $experimentIsFinished = false;
     ?>
 
       <div class="alert alert-info">
@@ -401,6 +395,15 @@ require("include/template/header.inc.php");
             </div>
         </div>
 
+<?
+}
+
+  else
+  {
+    Experiment::FetchAllMine(); 
+  }
+
+?>
 
 
 <?php

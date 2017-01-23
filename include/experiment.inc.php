@@ -203,15 +203,45 @@ class Experiment
             return $returnedName;
     }
 
+        /*
+    ** Fetches all experiments.
+    ** @param $id            dataset ID to fetch.
+    */
+    public static function FetchAllMine()
+    {
+        global $mysqli;
+        global $user_id;
+
+        $toReturn = [];
+
+        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id";
+
+        // Validate results
+        if ($result = $mysqli->query($query)) 
+        {
+            // Retreive results.
+            while ($data = $result->fetch_object()) 
+            {
+                $experiment = new Experiment($data);
+                $experiment->Render();
+            }
+            array_push($toReturn, $data);
+        }
+
+        return $toReturn;
+    }
+
     public function Render()
     {
+        $data = $this->GetJsonFromLog();
         ?>
         <div class="col-md-3">
-            <label class="btn btn-primary img-check">
-                <img src="Experiments/<?php echo $this->name;?>/<? echo $this->image;?>" alt="..." class="img-thumbnail" />
-                <br/> 
-                <span><?php echo $this->name;?></span>
-            </label></div>
+            <label style="text-align:center">
+            <span><?=$this->current_epocs;?> of <?=$this->total_epocs;?></span>
+            <br/>
+            <a href="index.php?experiment_id=<?=$this->id;?>"><?=$this->name;?></a>
+            </label>
+        </div>
         <?php
     } 
 
@@ -354,7 +384,8 @@ class Experiment
 
 
         $archivoLog = $experiment_path."/netlog.log";
-        @$contenido = file_get_contents($archivoLog);
+        if(! @$contenido = file_get_contents($archivoLog))
+            return;
         $file = fopen($archivoLog, "r") 
                 or die('<div class="alert alert-danger"><a class="close" data-dismiss="alert" href="#">&times;</a><p style="text-align:center">Unable to open file!</p></div>');
 
