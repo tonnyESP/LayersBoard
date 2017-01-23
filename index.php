@@ -32,7 +32,7 @@ require("include/template/header.inc.php");
     ?>
     </div> 
     <div class="row">
-      <h3>Not started experiments</h3>
+      <h3>Not finished experiments</h3>
     <?php
     // List all experiment
     Experiment::FetchAllNotFinished();
