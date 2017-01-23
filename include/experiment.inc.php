@@ -489,6 +489,108 @@ class Experiment
 
         return json_encode($outs);     
     }
+
+    public function FullRender()
+    { 
+        $experimentIsFinished = true;
+        // If we don't get the best_result in test for this experiment
+        if( !isset($this->best_result_test))
+        {
+            // Updates information about epocs percent
+            $json = $this->GetJsonFromLog();
+
+            $percent_finished = ($this->current_epocs / $this->total_epocs) * 100;
+
+            $experimentIsFinished = false;
+        ?>
+          <div class="alert alert-info">
+            <a class="close" data-dismiss="alert" href="#">&times;</a>
+            <p style="text-align:center">This experiment has not finished yet </p>
+          </div>
+        <?php
+            if(IsLayersRunning()==0)
+            {
+        ?>
+            <br/>
+            <div style="text-align:center">
+              <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play"></span> Start training</button>
+              <button class="btn btn-primary" id="show_console"><span class="glyphicon glyphicon-list-alt"></span> Show console</button>
+              <button class="btn btn-primary" id="show_graph"><span class="glyphicon glyphicon-signal"></span> Show graph</button>
+              <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
+              <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
+            </div>
+            <div class="clearfix"></div>
+            <?php
+          }
+          ?>
+
+        <?php
+        }
+        ?>
+              <div id="d3chart" style="text-align:center">
+              <h3>Errors</h3>
+              </div>
+            <div class="clearfix" style="height:40px"></div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="shell-wrap">
+                    <p class="shell-top-bar">Current net </p>
+                    <pre><code data-language="c" id="full_netcode" style="font-size:0.8em"><?=$this->RenderCurrentNet();?>     
+                    </code></pre>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="shell-wrap">
+                    <p class="shell-top-bar">CLL : Console Layers Log</p>
+                    <div class="shell-body" id="log-text">
+                    <?=$this->RenderTerminalLog();?>     
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+              <div class="clearfix"></div>
+              <div class="clearfix"></div>
+
+            <div class="progressDiv">
+                <div class="statChartHolder">
+                    <div class="progress-pie-chart" data-percent=""><!--Pie Chart -->
+                        <div class="ppc-progress">
+                            <div class="ppc-progress-fill"></div>
+                        </div>
+                        <div class="ppc-percents">
+                        <div class="pcc-percents-wrapper">
+                            <span>%</span>
+                        </div>
+                        </div>
+                    </div><!--End Chart -->
+                </div>
+                <div class="statRightHolder">
+                    <ul>
+                    <li> <h3 id="current_epocs_text"> </h3> <span>Epocs already trained</span></li>
+                    <li> <h3 id="total_epocs_text"> </h3> <span>Total epocs</span></li>
+                    </ul>
+                    
+                        <ul class="statsLeft">
+                          <li><h3 id="best_train_error_text"></h3> <span>Best training error</span></li>
+                          <li><h3 id="best_test_error_text"></h3> <span>Best test error</span></li>
+                        </ul>
+                        <ul class="statsRight">
+                          <li><h3 id="epoc_best_train_error_text"></h3> <span>Epoc when best training error</span></li>
+                          <li><h3 id="epoc_best_test_error_text"></h3> <span>Epoc when best test error</span></li>
+                        </ul>
+                </div>
+            </div>
+            <?php
+
+
+
+
+    }
+
+
 }
 
 ?>
