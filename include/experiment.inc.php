@@ -576,46 +576,46 @@ class Experiment
             // Updates information about epocs percent
             $json = $this->GetJsonFromLog();
             if($this->total_epocs > 0)
+            {
                 $percent_finished = ($this->current_epocs / $this->total_epocs) * 100;
+            }
             else
+            {
                 $percent_finished = 0;
+            }
 
             $experimentIsFinished = false;
 
             if($percent_finished == 100)
-                $experimentIsFinished = true;
+            {
+                $experimentIsFinished = true;                 
+            } 
 
             if($experimentIsFinished)
-            {
-        ?>
+            { ?>
 
-          <div class="alert alert-info">
-            <a class="close" data-dismiss="alert" href="#">&times;</a>
-            <p style="text-align:center">This experiment has finished already, you can rerun it or fork it </p>
-          </div>
-        <?php
+                <div class="alert alert-info">
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                    <p style="text-align:center">This experiment has finished already, you can rerun it or fork it </p>
+                </div>
+            <?php
             }
 
-            if(IsLayersRunning()==0)
-            {
-        ?>
-            <br/>
-            <div style="text-align:center">
-              <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play"></span> Start training</button>
-              <button class="btn btn-primary" id="show_net_and_log"><span class="glyphicon glyphicon-list-alt"></span> Show net and log</button>
-              <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> New experiment</a>
-              <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
-              <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
-            </div>
-            <div class="clearfix"></div>
+            if(IsLayersRunning() == 0)
+            { ?>
+                <br/>
+                <div style="text-align:center">
+                    <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play"></span> Start training</button>
+                    <button class="btn btn-primary" id="show_net_and_log"><span class="glyphicon glyphicon-list-alt"></span> Show net and log</button>
+                    <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> New experiment</a>
+                    <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
+                    <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
+                </div>
+                <div class="clearfix"></div>
             <?php
-          }
-          ?>
-
+            } ?>
         <?php
-        }
-
-        ?>
+        } ?>
 
         <? if($percent_finished > 0)
         { ?>
@@ -645,80 +645,46 @@ class Experiment
                 </div>
             </div>
             <div class="clearfix" style="height:80px"></div>
-
               
             <div class="clearfix" style="height:40px"></div>
-              <div class="row" id="index_net_and_log" style="display:none">
-              <h3 style="text-align:center"><span class="glyphicon glyphicon-list-alt"></span> Current net and log</h3>
-              <br/>
+
+            <div class="row" id="index_net_and_log" style="display:none">
+                <h3 style="text-align:center"><span class="glyphicon glyphicon-list-alt"></span> Current net and log</h3>
+                <br/>
                 <div class="col-md-6">
-                  <div class="shell-wrap">
-                    <p class="shell-top-bar">Current net </p>
-                    <pre><code data-language="c" id="full_netcode" style="font-size:0.8em"><?=$this->RenderCurrentNet();?>
-                    </code></pre>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="shell-wrap">
-                    <p class="shell-top-bar">CLL : Console Layers Log</p>
-                    <div class="shell-body" id="log-text">
-                    <?=$this->RenderTerminalLog();?>     
+                    <div class="shell-wrap">
+                        <p class="shell-top-bar">Current net </p>
+                        <pre>
+                            <code data-language="c" id="full_netcode" style="font-size:0.8em"><?=$this->RenderCurrentNet();?></code>
+                        </pre>
                     </div>
-                  </div>
                 </div>
-              </div>
-
-            </div>
-              <div class="clearfix"></div>
-              <div class="clearfix"></div>
-
-            <div class="progressDiv">
-                <div class="statChartHolder">
-                    <!--<div class="progress-pie-chart" data-percent=""><!--
-                        <div class="ppc-progress">
-                            <div class="ppc-progress-fill"></div>
+                <div class="col-md-6">
+                    <div class="shell-wrap">
+                        <p class="shell-top-bar">CLL : Console Layers Log</p>
+                        <div class="shell-body" id="log-text">
+                            <?=$this->RenderTerminalLog();?>     
                         </div>
-                        <div class="ppc-percents">
-                        <div class="pcc-percents-wrapper">
-                            <span>%</span>
-                        </div>
-                        </div>
-                    </div><!--End Chart -->
+                    </div>
                 </div>
-                <!--
-                <div class="statRightHolder">
-                    <ul>
-                    <li> <h3 id="current_epocs_text"> </h3> <span>Epocs already trained</span></li>
-                    <li> <h3 id="total_epocs_text"> </h3> <span>Total epocs</span></li>
-                    </ul>
-                    
-                        <ul class="statsLeft">
-                          <li><h3 id="best_train_error_text"></h3> <span>Best training error</span></li>
-                          <li><h3 id="best_test_error_text"></h3> <span>Best test error</span></li>
-                        </ul>
-                        <ul class="statsRight">
-                          <li><h3 id="epoc_best_train_error_text"></h3> <span>Epoc when best training error</span></li>
-                          <li><h3 id="epoc_best_test_error_text"></h3> <span>Epoc when best test error</span></li>
-                        </ul>
-                </div>-->
             </div>
-            <?php
+
+            <div class="clearfix"></div>
+            <div class="clearfix"></div>
+        <?php
         }
-        else{
-            ?>
-          <div class="alert alert-info">
-            <a class="close" data-dismiss="alert" href="#">&times;</a>
-            <p style="text-align:center">This experiment has not started yet </p>
-          </div>
-            <?php
+        else
+        { ?>
+            <div class="alert alert-info">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <p style="text-align:center">This experiment has not started yet </p>
+            </div>
+        <?php
         }
-
-
-
-
     }
 
 
+///////
 }
 
 ?>
