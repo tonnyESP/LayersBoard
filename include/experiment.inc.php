@@ -106,6 +106,7 @@ class Experiment
                 $this->epoc_best_result_test   = $data->epoc_best_result_test;
                 $this->epoc_best_result_train  = $data->epoc_best_result_train;
                 $this->dataset_id              = $data->dataset_id;
+                $this->process_id              = $data->process_id;
 
                 $toReturn = $this;
             }
@@ -134,6 +135,7 @@ class Experiment
         $this->epoc_best_result_test   = $data->epoc_best_result_test;
         $this->epoc_best_result_train  = $data->epoc_best_result_train;
         $this->dataset_id              = $data->dataset_id;
+        $this->process_id              = $data->process_id;
     }
     /*
     ** Inserts a new experiment
@@ -194,9 +196,10 @@ class Experiment
         $experiment_path = $layersBoardPath."/Experiments/".$this->name;
 
         // Execs layers in background and returns its pid
-        exec("layers ".$experiment_path."netfile.net 2>/dev/null & echo $!", $pid);
+        //exec("layers ".$experiment_path."netfile.net 2>/dev/null & echo $!", $pid);
+        exec("layers ".$experiment_path."/netfile.net > /dev/null 2>/dev/null & echo $!", $pid);
 
-        $this->UpdatePID($pid);
+        $this->UpdatePID($pid[0]);
 
     }
 
@@ -204,7 +207,7 @@ class Experiment
     ** Assign a given PID to an experiment
     ** (It could be null)
     */
-    private function UpdatePID($pid)
+    public function UpdatePID($pid)
     {
         global $user_id;
 
@@ -213,7 +216,33 @@ class Experiment
 
         // Validate results
         $result = $this->conn->query($query);
+    }
 
+    /*
+    ** Returns true if the process asigned to the experiment (process_id) 
+    ** is currently running (and is layers instance)
+    */
+    private function IsRunning()
+    {
+        global $user_id;
+
+        $process_id = (int) $this->process_id;
+
+        if($process_id != 0 && $process_id != -1 && $process_id != null)
+        {
+            // Gets all current layers instances and its pid
+            exec("sudo ps -A | grep -i layers | grep -v grep", $pids);
+
+            foreach ($pids as $pid) 
+            {
+                echo $pid."<br />\n";
+            }    
+        }
+        else
+        {
+            echo "PID not related with this experiment";
+        }
+        
     }
 
     // Recursively assigns experiment name

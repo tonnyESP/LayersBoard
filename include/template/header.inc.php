@@ -31,8 +31,8 @@ require("include/config.php");
       $.post("services/run-experiment.php", {
         experiment_id: id
       },
-      function(result) {
-        console.log(result);
+      function(result) 
+      {
         if (result == "ok")
           window.location.href = 'index.php?experiment_id=' + id;
         else
@@ -44,7 +44,8 @@ require("include/config.php");
       $.post("services/delete-experiment.php", {
         experiment_id: id
       },
-      function(result) {
+      function(result) 
+      {
         if (result == "ok")
           window.location.href = 'index.php';
         else
@@ -55,6 +56,17 @@ require("include/config.php");
     {
       window.location.href = 'new.php?experiment_id=' + id;
     } 
+    function IsExperimentRunning(id)
+    {
+      $.post("services/is-experiment-running.php", {
+        experiment_id: id
+      },
+      function(result) 
+      {
+        console.log(result);
+        alert(result);
+      });
+    }
 	</script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
