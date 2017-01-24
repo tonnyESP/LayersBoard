@@ -11,6 +11,15 @@
                   { DeleteExperiment(<?=$exp_id;?>); });
        
 
+                $("#show_net_and_log").off("click");
+				$("#show_net_and_log").on("click", function() 
+                  	{ 
+                  		$(this).toggleClass("active");
+                  		$("#index_net_and_log").toggle() 
+                	});
+       
+                
+
                 Rainbow.color(function() {
                    console.log('Net generated');
                 });

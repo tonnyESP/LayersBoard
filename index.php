@@ -37,10 +37,9 @@ require("include/template/header.inc.php");
     // List all experiment
     Experiment::FetchAllNotFinished();
     ?>
-    </div>    
+    </div>
     <?php
   }
-
 ?>
 
 

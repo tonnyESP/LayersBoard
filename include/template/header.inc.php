@@ -50,6 +50,10 @@ require("include/config.php");
           alert("Error " + result);
       });
     }
+    function ForkExperiment(id)
+    {
+      window.location.href = 'new.php?experiment_id=' + id;
+    } 
 	</script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

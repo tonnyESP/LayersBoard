@@ -103,14 +103,20 @@ function InitChart(datam)
 
     var data = [ trainData, 
                  testData ] ;
+
+    var width = $(".statChartHolder").width();
+    var height = 400;
+
+
     var xy_chart = d3_xy_chart()
-        .width(window.innerWidth * 0.5)
-        .height(window.innerHeight * 0.5)
+        .width(width)
+        .height(height)
         .xlabel("# Epocs")
-        .ylabel("% Error") ;
-    var svg = d3.select("#d3chart").append("svg")
+        .ylabel("% Error");
+    var svg = d3.select("#d3chart")
+        .append("svg")
         .datum(data)
-        .call(xy_chart) ;
+        .call(xy_chart)
 }
 
 
@@ -248,6 +254,9 @@ function d3_xy_chart() {
         ylabel = value ;
         return chart ;
     } ;
+
+
+
 
     return chart;
 }

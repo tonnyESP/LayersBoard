@@ -602,8 +602,8 @@ class Experiment
             <br/>
             <div style="text-align:center">
               <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play"></span> Start training</button>
-              <button class="btn btn-primary" id="show_console"><span class="glyphicon glyphicon-list-alt"></span> Show console</button>
-              <button class="btn btn-primary" id="show_graph"><span class="glyphicon glyphicon-signal"></span> Show graph</button>
+              <button class="btn btn-primary" id="show_net_and_log"><span class="glyphicon glyphicon-list-alt"></span> Show net and log</button>
+              <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> New experiment</a>
               <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
               <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
             </div>
@@ -616,11 +616,41 @@ class Experiment
         }
 
         ?>
-              <div id="d3chart" style="text-align:center">
-              <h3>Errors</h3>
-              </div>
+
+        <? if($percent_finished > 0)
+        { ?>
+            <div class="progressDiv row">
+                <div class="statChartHolder col-md-8">
+                    <div id="d3chart">
+                    </div>
+                </div>
+                <div class="statRightHolder col-md-4">
+                    <ul>
+                        <li> <h3 id="best_train_error_text"> </h3> <span>Training <small>at epoc <span id="epoc_best_train_error_text"></span></small></span></li>
+                        <li> <h3 id="best_test_error_text"> </h3> <span>Test <small>at epoc <span id="epoc_best_test_error_text"></span></small></span></li>
+                    </ul>
+                    <div class="row" style="margin-top:25px">
+                        <div class="progress-pie-chart" data-percent="">
+                            <div class="ppc-progress">
+                                <div class="ppc-progress-fill"></div>
+                            </div>
+                            <div class="ppc-percents">
+                            <div class="pcc-percents-wrapper">
+                                <span>%</span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="clearfix" style="height:80px"></div>
+
+              
             <div class="clearfix" style="height:40px"></div>
-              <div class="row">
+              <div class="row" id="index_net_and_log" style="display:none">
+              <h3 style="text-align:center"><span class="glyphicon glyphicon-list-alt"></span> Current net and log</h3>
+              <br/>
                 <div class="col-md-6">
                   <div class="shell-wrap">
                     <p class="shell-top-bar">Current net </p>
@@ -638,14 +668,13 @@ class Experiment
                 </div>
               </div>
 
-
             </div>
               <div class="clearfix"></div>
               <div class="clearfix"></div>
 
             <div class="progressDiv">
                 <div class="statChartHolder">
-                    <div class="progress-pie-chart" data-percent=""><!--Pie Chart -->
+                    <!--<div class="progress-pie-chart" data-percent=""><!--
                         <div class="ppc-progress">
                             <div class="ppc-progress-fill"></div>
                         </div>
@@ -656,6 +685,7 @@ class Experiment
                         </div>
                     </div><!--End Chart -->
                 </div>
+                <!--
                 <div class="statRightHolder">
                     <ul>
                     <li> <h3 id="current_epocs_text"> </h3> <span>Epocs already trained</span></li>
@@ -670,9 +700,18 @@ class Experiment
                           <li><h3 id="epoc_best_train_error_text"></h3> <span>Epoc when best training error</span></li>
                           <li><h3 id="epoc_best_test_error_text"></h3> <span>Epoc when best test error</span></li>
                         </ul>
-                </div>
+                </div>-->
             </div>
             <?php
+        }
+        else{
+            ?>
+          <div class="alert alert-info">
+            <a class="close" data-dismiss="alert" href="#">&times;</a>
+            <p style="text-align:center">This experiment has not started yet </p>
+          </div>
+            <?php
+        }
 
 
 

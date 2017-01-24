@@ -192,7 +192,16 @@
 
     </script>
 
-
+    <?php if($editMode)
+    {
+    ?>
+      <div class="alert alert-info">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
+        <p style="text-align:center">You are creating a new experiment based on your <a href="index.php?experiment_id=<?=$experiment->id;?>"><?=$experiment->name;?></a></p>
+      </div>
+    <?php
+    }
+    ?>
 
       <div class="container">
         <div class="row">
