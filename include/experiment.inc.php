@@ -617,7 +617,7 @@ class Experiment
         <?php
         } ?>
 
-        <? if($percent_finished > 0)
+        <?php if($percent_finished > 0)
         { ?>
             <div class="progressDiv row">
                 <div class="statChartHolder col-md-8">
