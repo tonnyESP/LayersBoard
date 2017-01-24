@@ -186,6 +186,8 @@ class Experiment
     */
     public function Run()
     {
+        global $layersBoardPath;
+
         // Go to layersBoard path
         chdir($layersBoardPath);
 
@@ -207,8 +209,7 @@ class Experiment
         global $user_id;
 
         $this->process_id = (int) $pid;
-        $query = "UPDATE `experiment` SET `process_id` = $this->process_id 
-                    WHERE `id` = $this->id AND `user_id` = $user_id";
+        $query = "UPDATE `experiment` SET `process_id` = $this->process_id WHERE `id` = $this->id AND `user_id` = $user_id";
 
         // Validate results
         $result = $mysqli->query($query);
