@@ -212,7 +212,7 @@ class Experiment
         $query = "UPDATE `experiment` SET `process_id` = $this->process_id WHERE `id` = $this->id AND `user_id` = $user_id";
 
         // Validate results
-        $result = $mysqli->query($query);
+        $result = $this->conn->query($query);
 
     }
 
