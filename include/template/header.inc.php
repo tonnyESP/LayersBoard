@@ -32,6 +32,7 @@ require("include/config.php");
         experiment_id: id
       },
       function(result) {
+        console.log(result);
         if (result == "ok")
           window.location.href = 'index.php?experiment_id=' + id;
         else

@@ -19,10 +19,10 @@ if (IsLayersRunning() == 0)
 
     $experiment = new Experiment( (int) $id );
 
-    $experiment_path = $layersBoardPath."/Experiments/".$experiment->name;
+    $experiment->Run();
 
-    exec("layers ".$experiment_path."/netfile.net > /dev/null 2>/dev/null &");
-
+    echo $experiment->process_id;
+   
     echo "ok";
 }
 else

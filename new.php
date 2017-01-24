@@ -156,6 +156,7 @@
 
               $("#start_training").attr("disabled", true);
 
+               // Calls to create the experiment
                $.post("services/create-new-experiment.php", {
                        experiment_name: experimentName,
                        const_threads: constThreads,
@@ -166,6 +167,7 @@
                        dataset_id: datasetId,
                        netfile: netfileContent
                    },
+                   // If we got a successful result, we start running the experiment
                    function(data) {
                         var id = data;
                         if ($.isNumeric(data)) {

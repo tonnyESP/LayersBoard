@@ -39,6 +39,7 @@ class Experiment
     public $epoc_best_result_test   = -1;
     public $epoc_best_result_train  = -1;
     public $dataset_id              = -1;
+    public $process_id              = -1;
 
     public $total_epocs             = -1;
     public $current_epocs           = -1;
@@ -177,6 +178,41 @@ class Experiment
         }
 
         return $toReturn;    
+    }
+
+    /*
+    ** Starts running the experiment in Layers
+    ** Retrieves the PID to save it into the database
+    */
+    public function Run()
+    {
+        // Go to layersBoard path
+        chdir($layersBoardPath);
+
+        $experiment_path = $layersBoardPath."/Experiments/".$this->name;
+
+        // Execs layers in background and returns its pid
+        exec("layers ".$experiment_path."netfile.net 2>/dev/null & echo $!", $pid);
+
+        $this->UpdatePID($pid);
+
+    }
+
+    /*
+    ** Assign a given PID to an experiment
+    ** (It could be null)
+    */
+    private function UpdatePID($pid)
+    {
+        global $user_id;
+
+        $this->process_id = (int) $pid;
+        $query = "UPDATE `experiment` SET `process_id` = $this->process_id 
+                    WHERE `id` = $this->id AND `user_id` = $user_id";
+
+        // Validate results
+        $result = $mysqli->query($query);
+
     }
 
     // Recursively assigns experiment name
