@@ -267,10 +267,10 @@ class Experiment
         if($this->IsStarted() && $this->total_epocs > 0 && $this->total_epocs == $this->current_epocs)
         {
             $toReturn = true;
+            // Update database PID (remove reference)
+            $this->UpdatePID(0);
         }    
 
-        // Update database PID (remove reference)
-        $this->UpdatePID(0);
         return $toReturn;
     }
     /*

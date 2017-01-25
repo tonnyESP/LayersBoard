@@ -91,7 +91,8 @@ require("include/config.php");
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Train</a></li>
+            <li class="active"><a href="index.php">List experiments</a></li>
+            <li><a href="new.php">New experiment</a></li>
             <li><a href="#">Test</a></li>
           </ul>
         </div><!--/.nav-collapse -->
