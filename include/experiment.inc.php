@@ -755,7 +755,10 @@ class Experiment
             }
             else
             {
-                $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
+                if($this->total_epocs > 0)
+                    $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
+                else
+                    $percent = 0;
             }
         }
 
