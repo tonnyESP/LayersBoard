@@ -21,7 +21,7 @@ require("include/template/header.inc.php");
 
     <?php
     // List all experiment
-    Experiment::FetchAllFinished();
+    Experiment::FetchAll();
     ?>
     </div>
     <div class="row">

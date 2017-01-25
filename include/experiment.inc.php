@@ -410,6 +410,34 @@ class Experiment
 
         return $toReturn;
     }
+    /*
+    ** Fetches all experiments ordered by % test error
+    */
+    public static function FetchAll()
+    {
+        global $mysqli;
+        global $user_id;
+
+        $toReturn = [];
+
+        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id ORDER BY `best_result_test` ASC";
+
+        // Validate results
+        if ($result = $mysqli->query($query)) 
+        {
+            // Retreive results.
+            while ($data = $result->fetch_object()) 
+            {
+                $experiment = new Experiment($data);
+
+                if($experiment->IsStarted())
+                    $experiment->Render();
+                
+            }
+        }
+
+        return $toReturn;
+    }
     public function Render()
     {
     ?>
@@ -447,7 +475,7 @@ class Experiment
                         <?=$this->name;?> 
                     </h3>
                     <h3 class="lead text-center">
-                        <?=$this->best_result_test;?>
+                        <?=$this->best_result_test;?>%
                     </h3>
                     <span>% error at test</span>
                     <br/>
@@ -806,7 +834,12 @@ class Experiment
         <?php
         } ?>
                 <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> Fork a copy</a>
+        <?php
+        if($IsFinished)
+            { ?>
                 <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
+            <?php
+            } ?>
                 <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
             </div>
             <div class="clearfix"></div>
