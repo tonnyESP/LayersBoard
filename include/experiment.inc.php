@@ -336,7 +336,7 @@ class Experiment
 
         $toReturn = [];
 
-        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id";
+        $query = "SELECT * FROM `experiment` WHERE `user_id` = $user_id ORDER BY best_result_test ASC";
 
         // Validate results
         if ($result = $mysqli->query($query)) 
@@ -736,55 +736,80 @@ class Experiment
 
     public function FullRender()
     { 
-        $experimentIsFinished = true;
+        // Updates information about epocs percent
+        $stats = $this->GetJsonFromLog();
+
+        $IsFinished = $this->IsFinished();
+        $IsStarted  = $this->IsStarted();
+        $IsRunning  = $this->IsRunning();
         // If we don't get the best_result in test for this experiment
-        if( !isset($this->best_result_test))
+        if(!$IsStarted)
         {
-            // Updates information about epocs percent
-            $json = $this->GetJsonFromLog();
-            if($this->total_epocs > 0)
+            $percent = 0;
+        }
+        else 
+        {
+            if($IsFinished)
             {
-                $percent_finished = ($this->current_epocs / $this->total_epocs) * 100;
+                $percent = 100;
             }
             else
             {
-                $percent_finished = 0;
+                $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
             }
+        }
 
-            $experimentIsFinished = false;
-
-            if($percent_finished == 100)
-            {
-                $experimentIsFinished = true;                 
-            } 
-
-            if($experimentIsFinished)
-            { ?>
-
-                <div class="alert alert-info">
-                    <a class="close" data-dismiss="alert" href="#">&times;</a>
-                    <p style="text-align:center">This experiment has finished already, you can rerun it or fork it </p>
-                </div>
-            <?php
-            }
-
-            if(IsLayersRunning() == 0)
-            { ?>
-                <br/>
-                <div style="text-align:center">
-                    <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play"></span> Start training</button>
-                    <button class="btn btn-primary" id="show_net_and_log"><span class="glyphicon glyphicon-list-alt"></span> Show net and log</button>
-                    <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> New experiment</a>
-                    <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
-                    <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
-                </div>
-                <div class="clearfix"></div>
-            <?php
-            } ?>
+        if($IsFinished)
+        { ?>
+            <div class="alert alert-info">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <p style="text-align:center">This experiment has finished already, you can rerun it or fork it </p>
+            </div>
+        <?php
+        }
+        if(!$IsStarted)
+        { ?>
+            <div class="alert alert-warning">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <p style="text-align:center">This experiment has not started yet</p>
+            </div>
+        <?php
+        }
+        if($IsRunning)
+        { ?>
+            <div class="alert alert-success">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <p style="text-align:center">This experiment is running right now with PID <?=$this->process_id;?></p>
+            </div>
         <?php
         } ?>
-
-        <?php if($percent_finished > 0)
+            <br/>
+            <div style="text-align:center">
+        <?php 
+        if(!$IsRunning)
+        { ?>
+                <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play-circle"></span> Start training</button>
+        <?php
+        }
+        else
+        { ?>
+                <button class="btn btn-danger" id="stop_training"><span class="glyphicon glyphicon-remove-sign"></span> Stop training</button>
+        <?php 
+        } ?>
+        <?php
+        if($IsRunning || $IsFinished)
+        { ?>
+                <button class="btn btn-primary" id="show_net_and_log"><span class="glyphicon glyphicon-list-alt"></span> Show net and log</button>
+        <?php
+        } ?>
+                <a href="new.php?experiment_id=<?=$this->id;?>"class="btn btn-primary" id="fork_experiment" title="Create a new experiment based on the current one"><span class="glyphicon glyphicon-random"></span> Fork a copy</a>
+                <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
+                <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
+            </div>
+            <div class="clearfix"></div>
+            <h3><?=$this->name;?></h3>
+        <?php 
+        if($percent > 0)
         { ?>
             <div class="progressDiv row">
                 <div class="statChartHolder col-md-8">
@@ -838,14 +863,6 @@ class Experiment
 
             <div class="clearfix"></div>
             <div class="clearfix"></div>
-        <?php
-        }
-        else
-        { ?>
-            <div class="alert alert-info">
-                <a class="close" data-dismiss="alert" href="#">&times;</a>
-                <p style="text-align:center">This experiment has not started yet </p>
-            </div>
         <?php
         }
     }
