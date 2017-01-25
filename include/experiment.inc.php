@@ -139,6 +139,8 @@ class Experiment
         $this->epoc_best_result_train  = $data->epoc_best_result_train;
         $this->dataset_id              = $data->dataset_id;
         $this->process_id              = $data->process_id;
+
+        $this->GetJsonFromLog();
     }
     /*
     ** Inserts a new experiment
@@ -262,12 +264,14 @@ class Experiment
         $toReturn = false;
 
         // If it started and current_epoc has reached total_epocs
-        if($this->IsStarted() && $this->total_epocs >0 && $this->total_epocs == $this->current_epocs)
+        if($this->IsStarted() && $this->total_epocs > 0 && $this->total_epocs == $this->current_epocs)
         {
             $toReturn = true;
         }    
 
-        return $toReturn;   
+        // Update database PID (remove reference)
+        $this->UpdatePID(0);
+        return $toReturn;
     }
     /*
     ** Returns if the process has started (by looking for netlog.log)
@@ -412,8 +416,9 @@ class Experiment
         <?php
         if(!$this->IsStarted())
         {
-            $label = "Stopped";
+            $label = "Stop";
             $class = "danger";
+            $percent = 0;
         }
         else 
         {
@@ -421,36 +426,36 @@ class Experiment
             {
                 $label = "Done";
                 $class = "success";
+                $percent = 100;
             }
             else
             {
-                $label = "Running";
+                $label = "Live";
                 $class = "primary";
+                $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
             }
         }
         ?>
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="index.php?experiment_id=<?=$this->id;?>" class="col-xs-12 col-sm-6 col-md-4 col-lg-3 experiment-short">
             <div class="offer offer-<?=$class;?>">
                 <div class="shape">
-                    <div class="shape-text"><?=$label;?></div>
+                    <div class="shape-text"><?=$percent;?> %</div>
                 </div>
                 <div class="offer-content">
+                <div class="clearfix"></div>
                     <h3 class="lead text-center">
-                        <?=$this->name;?>
+                        <?=$this->name;?> 
                     </h3>
-                    <?php
-                    if(!$this->IsStarted()) 
-                    { 
-                        $percent = ($this->current_epocs / $this->total_epocs) * 100;
-                    ?>
-                    <span><?=$percent;?></span>
-                    <a href="index.php?experiment_id=<?=$this->id;?>"><?=$this->name;?></a>
-                    <?php 
-                    }
-                    ?>
+                    <h3 class="lead text-center">
+                        <?=$this->best_result_test;?>
+                    </h3>
+                    <span>% error at test</span>
+                    <br/>
+                    <span><?=$this->best_result_train;?> % error training</span>
+                    <!--<a href=""><?=$this->name;?></a>-->
                 </div>
             </div>
-        </div>           
+        </a>           
     <?php
     } 
 

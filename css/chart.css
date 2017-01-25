@@ -297,6 +297,9 @@ overflow: scroll;
 .experiment-short{
   text-align: center;
 }
+.experiment-short:hover{
+  text-decoration: none;
+}
 .shape{    
   border-style: solid; border-width: 0 70px 40px 0; float:right; height: 0px; width: 0px;
   -ms-transform:rotate(360deg); /* IE 9 */
