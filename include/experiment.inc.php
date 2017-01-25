@@ -786,12 +786,12 @@ class Experiment
             <br/>
             <div style="text-align:center">
         <?php 
-        if(!$IsRunning)
+        if(!$IsStarted)
         { ?>
                 <button class="btn btn-primary" id="start_training"><span class="glyphicon glyphicon-play-circle"></span> Start training</button>
         <?php
         }
-        else
+        else if($IsRunning)
         { ?>
                 <button class="btn btn-danger" id="stop_training"><span class="glyphicon glyphicon-remove-sign"></span> Stop training</button>
         <?php 
