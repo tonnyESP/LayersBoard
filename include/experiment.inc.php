@@ -44,6 +44,9 @@ class Experiment
     public $total_epocs             = -1;
     public $current_epocs           = -1;
 
+    public $is_finished             = 0;
+    public $is_running              = 0;
+
     
     private $conn = null;
        
@@ -222,27 +225,76 @@ class Experiment
     ** Returns true if the process asigned to the experiment (process_id) 
     ** is currently running (and is layers instance)
     */
-    private function IsRunning()
+    public function IsRunning()
     {
         global $user_id;
 
         $process_id = (int) $this->process_id;
 
-        if($process_id != 0 && $process_id != -1 && $process_id != null)
+        // Return by default that is not running
+        $toReturn = false;
+
+        // If 
+        if($this->IsStarted() && $process_id > 0 && $process_id != null)
         {
-            // Gets all current layers instances and its pid
-            exec("sudo ps -A | grep -i layers | grep -v grep", $pids);
+            // Gets all current pids from layers instances 
+            exec("pgrep layers", $pids);
 
             foreach ($pids as $pid) 
             {
-                echo $pid."<br />\n";
-            }    
+                // Only if the process_id is in the list, return true
+                if($pid == $process_id)
+                    $toReturn = true;
+            }
         }
-        else
+
+        return $toReturn;   
+    }
+
+    /*
+    ** Returns if the process has finished
+    */
+    public function IsFinished()
+    {
+        global $user_id;
+
+        // Return by default that is not running
+        $toReturn = false;
+
+        // If it started and current_epoc has reached total_epocs
+        if($this->IsStarted() && $this->total_epocs >0 && $this->total_epocs == $this->current_epocs)
         {
-            echo "PID not related with this experiment";
-        }
-        
+            $toReturn = true;
+        }    
+
+        return $toReturn;   
+    }
+    /*
+    ** Returns if the process has started (by looking for netlog.log)
+    */
+    public function IsStarted()
+    {
+        $logfile = $this->GetExperimentPath()."/netlog.log";
+
+        $toReturn = false;
+
+        // If the netlog.log file is not created, the experiment has not started yet
+        if (file_exists($logfile)) 
+        {
+            $toReturn = true;
+        } 
+
+        return $toReturn;
+    }
+
+    /*
+    ** Returns the working path directory where the experiment is
+    */
+    private function GetExperimentPath()
+    {
+        global $layersBoardPath;
+
+        return $layersBoardPath."/Experiments/".$this->name;
     }
 
     // Recursively assigns experiment name
@@ -269,7 +321,7 @@ class Experiment
             return $returnedName;
     }
 
-        /*
+    /*
     ** Fetches all experiments.
     ** @param $id            dataset ID to fetch.
     */
@@ -289,14 +341,8 @@ class Experiment
             while ($data = $result->fetch_object()) 
             {
                 $experiment = new Experiment($data);
-                $stats = $experiment->GetJsonFromLog();
-                
-                if($experiment->total_epocs > 0)
-                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
-                else
-                    $percent_finished = 0;
 
-                if($percent_finished == 100)
+                if($experiment->IsFinished())
                     $experiment->Render();
             }
         }
@@ -324,14 +370,8 @@ class Experiment
             while ($data = $result->fetch_object()) 
             {
                 $experiment = new Experiment($data);
-                $stats = $experiment->GetJsonFromLog();
-                
-                if($experiment->total_epocs > 0)
-                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
-                else
-                    $percent_finished = 0;
 
-                if($percent_finished == 0)
+                if( ! $experiment->IsStarted() )
                     $experiment->Render();
             }
         }
@@ -340,9 +380,8 @@ class Experiment
     }
         /*
     ** Fetches all experiments.
-    ** @param $id            dataset ID to fetch.
     */
-    public static function FetchAllNotFinished()
+    public static function FetchAllRunning()
     {
         global $mysqli;
         global $user_id;
@@ -358,14 +397,8 @@ class Experiment
             while ($data = $result->fetch_object()) 
             {
                 $experiment = new Experiment($data);
-                $stats = $experiment->GetJsonFromLog();
-                
-                if($experiment->total_epocs > 0)
-                    $percent_finished = ($experiment->current_epocs / $experiment->total_epocs) * 100;
-                else
-                    $percent_finished = 0;
 
-                if($percent_finished > 0 && $percent_finished < 100)
+                if($experiment->IsRunning())
                     $experiment->Render();
                 
             }
@@ -375,16 +408,50 @@ class Experiment
     }
     public function Render()
     {
-        $data = $this->GetJsonFromLog();
-        ?>
-        <div class="experiment-short col-md-3">
-            <label>
-            <span><?=$this->current_epocs;?> of <?=$this->total_epocs;?></span>
-            <br/>
-            <a href="index.php?experiment_id=<?=$this->id;?>"><?=$this->name;?></a>
-            </label>
-        </div>
+    ?>
         <?php
+        if(!$this->IsStarted())
+        {
+            $label = "Stopped";
+            $class = "danger";
+        }
+        else 
+        {
+            if($this->IsFinished())
+            {
+                $label = "Done";
+                $class = "success";
+            }
+            else
+            {
+                $label = "Running";
+                $class = "primary";
+            }
+        }
+        ?>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="offer offer-<?=$class;?>">
+                <div class="shape">
+                    <div class="shape-text"><?=$label;?></div>
+                </div>
+                <div class="offer-content">
+                    <h3 class="lead text-center">
+                        <?=$this->name;?>
+                    </h3>
+                    <?php
+                    if(!$this->IsStarted()) 
+                    { 
+                        $percent = ($this->current_epocs / $this->total_epocs) * 100;
+                    ?>
+                    <span><?=$percent;?></span>
+                    <a href="index.php?experiment_id=<?=$this->id;?>"><?=$this->name;?></a>
+                    <?php 
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>           
+    <?php
     } 
 
 
@@ -616,7 +683,7 @@ class Experiment
                 }
 
             // when the last iteration
-            if($current_epocs == $total_epocs)
+            //if($current_epocs == $total_epocs)
             {
                 $outs[$out_name]["Best_train_error"]      = $this->best_result_train      = $best_result_train; 
                 $outs[$out_name]["Best_test_error"]       = $this->best_result_test       = $best_result_test; 
@@ -628,9 +695,38 @@ class Experiment
             }
         }
 
-        fclose($file);   
+        fclose($file);
+
+        $this->UpdateInDB();
 
         return json_encode($outs);     
+    }
+
+    /*
+    ** Updates register in database to match current object
+    */
+    public function UpdateInDB()
+    {
+        global $user_id;
+
+        $query = "UPDATE `experiment` SET 
+            `name`                   = '$this->name',
+            `const_threads`          = $this->const_threads,
+            `const_batch`            = $this->const_batch,
+            `const_log_filename`     = '$this->const_log_filename',
+            `const_seed`             = $this->const_seed,
+            `network_raw`            = '$this->network_raw',
+            `script_raw`             = '$this->script_raw',
+            `best_result_test`       = $this->best_result_test,
+            `best_result_train`      = $this->best_result_train,
+            `epoc_best_result_test`  = $this->epoc_best_result_test,
+            `epoc_best_result_train` = $this->epoc_best_result_train,
+            `dataset_id`             = $this->dataset_id,
+            `process_id`             = $this->process_id 
+        WHERE `id` = $this->id AND `user_id` = $user_id";
+
+        $result = $this->conn->query($query);
+
     }
 
     public function FullRender()

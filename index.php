@@ -35,7 +35,7 @@ require("include/template/header.inc.php");
       <h3>Not finished experiments</h3>
     <?php
     // List all experiment
-    Experiment::FetchAllNotFinished();
+    Experiment::FetchAllRunning();
     ?>
     </div>
     <?php
