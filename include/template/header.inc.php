@@ -87,13 +87,31 @@ require("include/config.php");
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">LayersBoard</a>
+          <a class="navbar-brand" href="index.php">LayersBoard</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="index.php">List experiments</a></li>
             <li><a href="new.php">New experiment</a></li>
             <li><a href="#">Test</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <?php if(!isset($user))
+            { ?>
+            <li><a href="services/login.php">Login</a></li>
+            <?php
+            }
+            else
+            {?>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?=$user->name;?> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="services/logout.php">Logout</a></li>
+              </ul>
+            </li>
+            <?php
+            }?>
+
           </ul>
         </div><!--/.nav-collapse -->
       </div>

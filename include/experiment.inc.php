@@ -175,8 +175,8 @@ class Experiment
                 die("The process of creating a new experiment has failed");
         }
 
-        $query = "INSERT INTO `experiment` (`name`, `user_id`, `const_threads`, `const_batch`, `const_log_filename`, `const_seed`, `network_raw`, `script_raw`, `dataset_id` )
-                   VALUES                ('$name', '$user_id', $const_threads,  $const_batch, '$const_log_filename', $const_seed, '$network_raw', '$script_raw', $dataset_id )";
+        $query = "INSERT INTO `experiment` (`name`, `user_id`, `const_threads`, `const_batch`, `const_log_filename`, `const_seed`, `network_raw`, `script_raw`, `dataset_id`, `create_date` )
+                   VALUES                ('$name', '$user_id', $const_threads,  $const_batch, '$const_log_filename', $const_seed, '$network_raw', '$script_raw', $dataset_id, NOW() )";
 
         // Check if everything gone ok
         if( $result = $mysqli->query($query) )

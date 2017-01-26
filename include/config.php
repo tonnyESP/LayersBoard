@@ -3,8 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Tonny's local mac
-$serverPath = "/Volumes/Macintosh HD/Applications/XAMPP/xamppfiles/htdocs/LayersBoard";
-$layersBoardPath = "/Users/tonny/Documents/Layers/Layers";
+$serverPath = "/Volumes/Macintosh HD/Applications/XAMPP/xamppfiles/htdocs/LayersBoard/LayersBoard";
+$layersBoardPath = "/Users/tonny/Documents/Layers/LayersBoard";
 
 // Server
 //$serverPath = "/var/www/html/LayersBoard";
