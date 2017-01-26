@@ -15,41 +15,22 @@ require("include/template/header.inc.php");
   else
   {
     ?>
-
     <div class="row">
-      <?php
-      // List all experiment
-      $running = Experiment::FetchAll();
-      if($running)
-      {
-        echo "<h3>Experiments sorted by % test error</h3>";
-        echo $running;
-      }
-      else
-      {
-      }
-      ?>
+    <h3>Currently running</h3>
+    <?php 
+    Experiment::FetchAllRunning();
+    ?>
+    </div>
+    <div class="row">
+    <h3>Experiments sorted by % test error</h3>
+    <?php 
+    Experiment::FetchAllRunning();
+     ?>
     </div>
     <div class="row">
       <h3>Not started experiments</h3>
     <?php
-    $running = Experiment::FetchAllRunning();
-    if($running)
-    {?>
-      <h3>Experiments running</h3>
-      $running;
-    <?php
-    }
-
-    // List all experiment
     Experiment::FetchAllNotStarted();
-    ?>
-    </div> 
-    <div class="row">
-      <h3>Not finished experiments</h3>
-    <?php
-    // List all experiment
-    Experiment::FetchAllRunning();
     ?>
     </div>
     <?php
