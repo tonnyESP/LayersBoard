@@ -96,6 +96,7 @@ class User
 
     public function Login()
     {
+        global $_SESSION;
         $_SESSION["user"] = serialize($this);
     }
 

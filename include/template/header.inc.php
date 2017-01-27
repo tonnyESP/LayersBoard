@@ -120,3 +120,12 @@ require("include/config.php");
     <div class="container">
 
     <div style="height:80px"></div>  
+
+
+    <?php 
+    if(!isset($user))
+    {
+
+      die('<div class="alert alert-danger"><a class="close" data-dismiss="alert" href="#">&times;</a><p style="text-align:center">You need to be <a href="services/login.php?user_id=1">logged in</a>!</p></div>');
+
+    }

@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+session_start();
 
 // Tonny's local mac
 $serverPath = "/Volumes/Macintosh HD/Applications/XAMPP/xamppfiles/htdocs/LayersBoard/LayersBoard";
@@ -37,5 +38,6 @@ if(isset($_SESSION['user']))
 	$user = unserialize($_SESSION['user']);
 	$user_id = $user->id;
 }
+
 
 ?>

@@ -13,8 +13,8 @@ $user = new User( (int) $id );
 
 $user->Login();
 
-if(isset($_SESSION["user_id"]))
-	echo $_SESSION["user_id"];
+if(isset($_SESSION["user"]))
+	echo $_SESSION["user"];
 else
 	echo "FAIL";
 
