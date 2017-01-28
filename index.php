@@ -24,7 +24,7 @@ require("include/template/header.inc.php");
     <div class="row">
     <h3>Experiments sorted by % test error</h3>
     <?php 
-    Experiment::FetchAllRunning();
+    Experiment::FetchAll();
      ?>
     </div>
     <div class="row">

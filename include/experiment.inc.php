@@ -430,7 +430,7 @@ class Experiment
             {
                 $experiment = new Experiment($data);
 
-                if($experiment->IsStarted() && $experiment->Current_epocs > 0)
+                if($experiment->IsStarted() && $experiment->current_epocs > 0)
                         $experiment->Render();
                 
             }

@@ -22,10 +22,10 @@ require("include/config.php");
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="css/chart.css">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
 
-	<script type="text/javascript">
+  <script type="text/javascript">
     function RunExperiment(id)
     {
       $.post("services/run-experiment.php", {
@@ -67,7 +67,7 @@ require("include/config.php");
         alert(result);
       });
     }
-	</script>
+  </script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -129,3 +129,4 @@ require("include/config.php");
       die('<div class="alert alert-danger"><a class="close" data-dismiss="alert" href="#">&times;</a><p style="text-align:center">You need to be <a href="services/login.php?user_id=1">logged in</a>!</p></div>');
 
     }
+    ?>

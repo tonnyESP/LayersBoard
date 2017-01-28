@@ -8,8 +8,8 @@ $serverPath = "/Volumes/Macintosh HD/Applications/XAMPP/xamppfiles/htdocs/Layers
 $layersBoardPath = "/Users/tonny/Documents/Layers/LayersBoard";
 
 // Server
-//$serverPath = "/var/www/html/LayersBoard";
-//$layersBoardPath = "/home/tonnyesp/LayersBoard";
+$serverPath = "/var/www/html/LayersBoard";
+$layersBoardPath = "/home/tonnyesp/LayersBoard";
  
 require_once("$serverPath/include/functions.inc.php");
 require_once("$serverPath/include/database.inc.php");
