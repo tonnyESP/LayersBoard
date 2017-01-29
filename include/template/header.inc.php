@@ -91,9 +91,9 @@ require("include/config.php");
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li<?=$list_experiments_section;?>><a href="index.php">List experiments</a></li>
-            <li<?=$new_experiment_section;?>><a href="new.php">New experiment</a></li>
-            <li<?=$test_section;?>><a href="#">Test</a></li>
+            <li <?=$list_experiments_section;?>><a href="index.php">List experiments</a></li>
+            <li <?=$new_experiment_section;?>><a href="new.php">New experiment</a></li>
+            <li <?=$test_experiment_section;?>><a href="#">Test</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <?php if(!isset($user))
