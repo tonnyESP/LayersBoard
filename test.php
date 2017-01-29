@@ -1,6 +1,4 @@
 <?php
-$test_experiment_section = "class='active'";
-
 require("include/template/header.inc.php");
 ?>
 <style type="text/css">
@@ -33,24 +31,18 @@ require("include/template/header.inc.php");
     vertical-align: middle;
     line-height: 120px;
 }
-html, body{
-     max-width:100%;
-     max-height:100%;
-     overflow:hidden;
-}
 </style>
 <div id="sketch">
     <canvas id="paint"></canvas>
 </div>
 <button id="clearButton" class="btn btn-default">Clear</button>
-<button id="getPixels" class="btn btn-success">Test it!</button>
+<button id="getPixels" class="btn btn-success"><i></i> Test it!</button>
 
 <div id="result">
     <h1 id="result_test"></h1>
 </div>
-<button id="clearButton" class="btn btn-success">Yes</button>
-<button id="getPixels" class="btn btn-danger">No</button>
-
+<button id="yes_button" class="btn btn-success">Yes</button>
+<button id="no_button" class="btn btn-danger">No</button>
 
 <div id="result_start"></div>
 
@@ -65,11 +57,6 @@ var toLayers = "";
 
 
 
-
-$('html, body').on('touchstart touchmove', function(e){ 
-     //prevent native touch activity like scrolling
-     e.preventDefault(); 
-});
 
 (function() {
     var canvas = document.querySelector('#paint');
@@ -126,12 +113,12 @@ $('html, body').on('touchstart touchmove', function(e){
         canvas.removeEventListener('touchmove', onPaint, false);
     }, false);
 
-    clearButton.addEventListener('click touchdown', function() {
+    clearButton.addEventListener('click', function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }, false);
 
 
-    getPixels.addEventListener('click touchdown', function() 
+    getPixels.addEventListener('click', function() 
     {
         myOutput = []
         toLayers = "";
@@ -150,7 +137,11 @@ $('html, body').on('touchstart touchmove', function(e){
 
         $("#pixels").html(myOutput);
         $("#toLayers").html(toLayers);
+        
+        $("#result_test").html("");
 
+        $("#getPixels > i").toggleClass("fa fa-circle-o-notch fa-spin");
+        $("#getPixels").attr("disabled", true);
 
         StartTest();
 
@@ -187,6 +178,8 @@ var GetTestResult = function(){
             var res = argmax(values);
 
 
+            $("#getPixels > i").toggleClass("fa fa-circle-o-notch fa-spin");
+            $("#getPixels").attr("disabled", false);
 
             $("#result_test").html(res);
 

@@ -18,6 +18,7 @@ require("include/config.php");
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.min.css">
     <link rel="stylesheet" type="text/css" href="css/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" type="text/css" href="css/chart.css">
