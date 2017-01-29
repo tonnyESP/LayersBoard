@@ -1,4 +1,6 @@
 <?php
+$test_experiment_section = "class='active'";
+
 require("include/template/header.inc.php");
 ?>
 <style type="text/css">

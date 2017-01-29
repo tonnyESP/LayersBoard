@@ -1,4 +1,7 @@
-<?php require_once("include/template/header.inc.php");
+<?php 
+$new_experiment_section = "class='active'";
+
+require_once("include/template/header.inc.php");
 
   // By default, the main behaviour will be creating a new experiment, but we can enter in editMode
   $editMode = false;

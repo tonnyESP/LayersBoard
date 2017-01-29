@@ -1,4 +1,6 @@
 <?php
+$list_experiments_section = "class='active'";
+
 require("include/template/header.inc.php");
 ?>
 
