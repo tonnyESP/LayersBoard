@@ -460,7 +460,10 @@ class Experiment
             {
                 $label = "Live";
                 $class = "primary";
-                $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
+                if($this->current_epocs > 0)
+                    $percent = (int) (($this->current_epocs / $this->total_epocs) * 100);
+                else
+                    $percent = 0;
             }
         }
         ?>

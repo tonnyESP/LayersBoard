@@ -1,233 +1,232 @@
-<?php require_once("include/template/header.inc.php");?>
-<style>
-
-body {
-  font: 10px sans-serif;
+<?php
+require("include/template/header.inc.php");
+?>
+<style type="text/css">
+#sketch, #result {
+    border: 1px solid gray;
+    height: 168px;
+    width: 168px;
 }
+#pixels{
+    width: 196px;
+    line-height: 6px;
+    font-size:4px;
+    color: #fff;
 
+}
+#pixels > span{
+    display:inline-block;
+    width:5px; 
+    height:5px;
+    margin:1px;
+    text-align: center;
+}
+#paint{
+    height: 168px;
+    width: 168px; 
+}
+#result_test{
+    font-size: 100px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 120px;
+}
+html, body{
+     max-width:100%;
+     max-height:100%;
+     overflow:hidden;
+}
 </style>
-<body>
-<script src="http://d3js.org/d3.v3.js"></script>
-<script>
+<div id="sketch">
+    <canvas id="paint"></canvas>
+</div>
+<button id="clearButton" class="btn btn-default">Clear</button>
+<button id="getPixels" class="btn btn-success">Test it!</button>
 
-$.get( "http://localhost/layers/services/get-json-from-log.php?experiment_id=5", function( data ) {
-  InitChart($.parseJSON(data));
+<div id="result">
+    <h1 id="result_test"></h1>
+</div>
+<button id="clearButton" class="btn btn-success">Yes</button>
+<button id="getPixels" class="btn btn-danger">No</button>
+
+
+<div id="result_start"></div>
+
+<div id="pixels"></div>
+<div id="toLayers"></div>
+
+
+<script type="text/javascript">
+    
+var myOutput = [];
+var toLayers = "";
+
+
+
+
+$('html, body').on('touchstart touchmove', function(e){ 
+     //prevent native touch activity like scrolling
+     e.preventDefault(); 
 });
 
-function InitChart(datam)
+(function() {
+    var canvas = document.querySelector('#paint');
+    var ctx = canvas.getContext('2d');
+
+    var clearButton = document.querySelector('#clearButton');
+    var getPixels = document.querySelector('#getPixels');
+    var testIt = document.querySelector('#testIt');
+    
+    var sketch = document.querySelector('#sketch');
+    var sketch_style = getComputedStyle(sketch);
+    canvas.width = 28;
+    canvas.height = 28;
+
+    var mouse = {x: 0, y: 0};
+    var last_mouse = {x: 0, y: 0};
+    
+    /* Mouse Capturing Work */
+    canvas.addEventListener('mousemove', function(e) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
+        
+        mouse.x = (e.pageX - this.offsetLeft) / 6;
+        mouse.y = (e.pageY - this.offsetTop) / 6;
+    }, false);
+
+    canvas.addEventListener('touchmove', function(e) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
+        
+        mouse.x = (e.pageX - this.offsetLeft) / 6;
+        mouse.y = (e.pageY - this.offsetTop) / 6;
+    }, false); 
+    
+    /* Drawing on Paint App */
+    ctx.lineWidth = 1;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'red';
+    
+    canvas.addEventListener('mousedown', function(e) {
+        canvas.addEventListener('mousemove', onPaint, false);
+    }, false);
+    
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', onPaint, false);
+    }, false);
+
+    canvas.addEventListener('touchstart', function(e) {
+        canvas.addEventListener('touchmove', onPaint, false);
+    }, false);
+    
+    canvas.addEventListener('touchend', function() {
+        canvas.removeEventListener('touchmove', onPaint, false);
+    }, false);
+
+    clearButton.addEventListener('click touchdown', function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, false);
+
+
+    getPixels.addEventListener('click touchdown', function() 
+    {
+        myOutput = []
+        toLayers = "";
+
+        //$("#pixels").html("Tenemos: <br/>");
+        var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+        //console.log(data)
+        for (var i = 0; i < data.length; i += 4) 
+        {
+            myOutput.push("<span style='background: rgb("+data[i]+","+data[i]+","+data[i]+");'>"+i / 4+"&nbsp;</span>" );
+            toLayers += " "+data[i];
+        }
+
+        toLayers = "1 784 10 \n"+toLayers
+        toLayers = toLayers+" 0 0 0 0 0 0 0 0 0 0"
+
+        $("#pixels").html(myOutput);
+        $("#toLayers").html(toLayers);
+
+
+        StartTest();
+
+    }, false);
+
+   
+    var onPaint = function() {
+        ctx.beginPath();
+        ctx.moveTo(last_mouse.x, last_mouse.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.closePath();
+        ctx.stroke();
+    };
+
+
+
+
+}())
+
+var GetTestResult = function(){
+    $.ajax({
+        url: "services/get-test-result.php",
+        async: true,
+        error: function(e){
+            console.log(e)
+            $("#result_test").html("ERROR: "+data);
+
+        },
+        success: function(data){
+            console.log(data);
+
+            var values = data.split(" ");
+
+            var res = argmax(values);
+
+
+
+            $("#result_test").html(res);
+
+        }
+    });
+}
+
+var StartTest = function()
 {
-
-    // Networks outs: (N1:out, ...)
-    var outs = [];
-    var modes = [];
-    var epocs = [];
-
-    var trainData = 
+    $.post("services/start-test.php", {
+        data: toLayers
+    },
+    function(result) 
     {
-        label: "",
-        x: [],
-        y: []
+
+        setTimeout(GetTestResult, 3000);
+
+        //$("#result_start").html(result);
+    }, false);
+}
+
+
+function argmax(arr) {
+    if (arr.length === 0) {
+        return -1;
     }
 
-    var testData = 
-    {
-        label: "",
-        x: [],
-        y: []
-    }
+    var max = arr[0];
+    var maxIndex = 0;
 
-    for (var key in datam) 
-    {
-       //console.log(' name=' + key + ' value=' + datam[0][key]);
-       outs.push(key);
-       for (var mode in datam[key]) 
-       {
-            modes.push(mode);
-            if(mode == "Training")
-            {
-                trainData.label = "Training";
-            }
-            else
-            {
-                testData.label = "Test";
-            }
-
-            var count = 0;
-            for (var errors in datam[key][mode]) 
-            {
-
-                epocs.push(errors);
-                if(mode == "Training")
-                {
-                    trainData.x.push(count+1);
-                    trainData.y.push(datam[key][mode][count]["Error"]);
-                }
-                else
-                {
-                    testData.x.push(count+1);
-                    testData.y.push(datam[key][mode][count]["Error"]);
-                }
-                epocs.push(count);
-
-                count ++;
-            }
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
         }
     }
 
-    var data = [ trainData, 
-                 testData ] ;
-    var xy_chart = d3_xy_chart()
-        .width(960)
-        .height(500)
-        .xlabel("X Axis")
-        .ylabel("Y Axis") ;
-    var svg = d3.select("body").append("svg")
-        .datum(data)
-        .call(xy_chart) ;
-}
-
-
-function d3_xy_chart() {
-    var width = 640,  
-        height = 480, 
-        xlabel = "X Axis Label",
-        ylabel = "Y Axis Label" ;
-    
-    function chart(selection) {
-        selection.each(function(datasets) {
-            //
-            // Create the plot. 
-            //
-            var margin = {top: 20, right: 80, bottom: 30, left: 50}, 
-                innerwidth = width - margin.left - margin.right,
-                innerheight = height - margin.top - margin.bottom ;
-            
-            var x_scale = d3.scale.linear()
-                .range([0, innerwidth])
-                .domain([ d3.min(datasets, function(d) { return d3.min(d.x); }), 
-                          d3.max(datasets, function(d) { return d3.max(d.x); }) ]) ;
-            
-            var y_scale = d3.scale.linear()
-                .range([innerheight, 0])
-                .domain([ d3.min(datasets, function(d) { return d3.min(d.y); }),
-                          d3.max(datasets, function(d) { return d3.max(d.y); }) ]) ;
-
-            var color_scale = d3.scale.category10()
-                .domain(d3.range(datasets.length)) ;
-
-            var x_axis = d3.svg.axis()
-                .scale(x_scale)
-                .orient("bottom") ;
-
-            var y_axis = d3.svg.axis()
-                .scale(y_scale)
-                .orient("left") ;
-
-            var x_grid = d3.svg.axis()
-                .scale(x_scale)
-                .orient("bottom")
-                .tickSize(-innerheight)
-                .tickFormat("") ;
-
-            var y_grid = d3.svg.axis()
-                .scale(y_scale)
-                .orient("left") 
-                .tickSize(-innerwidth)
-                .tickFormat("") ;
-
-            var draw_line = d3.svg.line()
-                .interpolate("basis")
-                .x(function(d) { return x_scale(d[0]); })
-                .y(function(d) { return y_scale(d[1]); }) ;
-
-            var svg = d3.select(this)
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")") ;
-            
-            svg.append("g")
-                .attr("class", "x grid")
-                .attr("transform", "translate(0," + innerheight + ")")
-                .call(x_grid) ;
-
-            svg.append("g")
-                .attr("class", "y grid")
-                .call(y_grid) ;
-
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + innerheight + ")") 
-                .call(x_axis)
-                .append("text")
-                .attr("dy", "-.71em")
-                .attr("x", innerwidth)
-                .style("text-anchor", "end")
-                .text(xlabel) ;
-            
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(y_axis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", "0.71em")
-                .style("text-anchor", "end")
-                .text(ylabel) ;
-
-            var data_lines = svg.selectAll(".d3_xy_chart_line")
-                .data(datasets.map(function(d) {return d3.zip(d.x, d.y);}))
-                .enter().append("g")
-                .attr("class", "d3_xy_chart_line") ;
-            
-            data_lines.append("path")
-                .attr("class", "line")
-                .attr("d", function(d) {return draw_line(d); })
-                .attr("stroke", function(_, i) {return color_scale(i);}) ;
-            
-            data_lines.append("text")
-                .datum(function(d, i) { return {name: datasets[i].label, final: d[d.length-1]}; }) 
-                .attr("transform", function(d) { 
-                    return ( "translate(" + x_scale(d.final[0]) + "," + 
-                             y_scale(d.final[1]) + ")" ) ; })
-                .attr("x", 3)
-                .attr("dy", ".35em")
-                .attr("fill", function(_, i) { return color_scale(i); })
-                .text(function(d) { return d.name; }) ;
-
-        }) ;
-    }
-
-    chart.width = function(value) {
-        if (!arguments.length) return width;
-        width = value;
-        return chart;
-    };
-
-    chart.height = function(value) {
-        if (!arguments.length) return height;
-        height = value;
-        return chart;
-    };
-
-    chart.xlabel = function(value) {
-        if(!arguments.length) return xlabel ;
-        xlabel = value ;
-        return chart ;
-    } ;
-
-    chart.ylabel = function(value) {
-        if(!arguments.length) return ylabel ;
-        ylabel = value ;
-        return chart ;
-    } ;
-
-    return chart;
+    return maxIndex;
 }
 
 </script>
 
-
-
-
-<?php require_once("include/template/footer.inc.php");?>
+<?php
+require("include/template/footer.inc.php");
+?>

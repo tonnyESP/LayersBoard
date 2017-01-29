@@ -8,11 +8,17 @@
 
                 $("#delete_experiment").off("click");
                 $("#delete_experiment").on("click", function() 
-                  { DeleteExperiment(<?=$exp_id;?>); });
+                  { 
+                    var confirmation = confirm("Are you sure you want to remove this experiment?")
+                    if( confirmation )
+                      DeleteExperiment(<?=$exp_id;?>); 
+                  });
+
+
        
 
                 $("#show_net_and_log").off("click");
-				$("#show_net_and_log").on("click", function() 
+				        $("#show_net_and_log").on("click", function() 
                   	{ 
                   		$(this).toggleClass("active");
                   		$("#index_net_and_log").toggle() 

@@ -71,15 +71,16 @@ class User
         if ($result = $this->conn->query($query)) 
         {
             // Retreive results.
-            $data = $result->fetch_object();
+            if($data = $result->fetch_object())
+            {
+                $this->id          = $data->id;
+                $this->name        = $data->name;
+                $this->role        = $data->role;
+                $this->image       = $data->image;     
+                $this->active      = $data->active;
 
-            $this->id          = $data->id;
-            $this->name        = $data->name;
-            $this->role        = $data->role;
-            $this->image       = $data->image;     
-            $this->active      = $data->active;
-
-            $toReturn = true;
+                $toReturn = true;
+            }
         }
 
         return $toReturn;
