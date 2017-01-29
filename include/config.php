@@ -8,8 +8,8 @@ $serverPath = "/Volumes/Macintosh HD/Applications/XAMPP/xamppfiles/htdocs/Layers
 $layersBoardPath = "/Users/tonny/Documents/Layers/LayersBoard";
 
 // Server
-$serverPath = "/var/www/html/LayersBoard";
-$layersBoardPath = "/home/tonnyesp/LayersBoard";
+//$serverPath = "/var/www/html/LayersBoard";
+//$layersBoardPath = "/home/tonnyesp/LayersBoard";
  
 require_once("$serverPath/include/functions.inc.php");
 require_once("$serverPath/include/database.inc.php");
@@ -38,6 +38,11 @@ if(isset($_SESSION['user']))
 	$user = unserialize($_SESSION['user']);
 	$user_id = $user->id;
 }
+
+// Easy way to show the "active" class at the selected section
+$list_experiments_section = "";
+$new_experiment_section   = "";
+$test_experiment_section  = "";
 
 
 ?>
