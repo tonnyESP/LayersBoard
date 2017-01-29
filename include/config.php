@@ -40,9 +40,8 @@ if(isset($_SESSION['user']))
 }
 
 // Easy way to show the "active" class at the selected section
-$list_experiments_section = "";
-$new_experiment_section   = "";
-$test_experiment_section  = "";
-
+$list_experiments_section = isset($list_experiments_section) ? $list_experiments_section : "";
+$new_experiment_section   = isset($new_experiment_section)   ? $new_experiment_section   : "";
+$test_experiment_section  = isset($test_experiment_section)  ? $test_experiment_section  : "";
 
 ?>
