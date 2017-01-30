@@ -309,7 +309,7 @@ class Experiment
     /*
     ** Returns .dot file created by layers. Used to show network topology
     */
-    private function GetDotFileContents()
+    public function GetDotFileContents()
     {
         global $layersBoardPath;
 
@@ -901,6 +901,25 @@ class Experiment
             </div>
             <div class="clearfix" style="height:80px"></div>
               
+
+        <?php
+        if($dotfile = $this->GetDotFileContents())
+        {?>
+            <div id="dotfile-network" style="text-align: center">
+                <script type="text/javascript">
+                $.ajax({
+                    url: "js/viz.js",
+                    dataType: "script",
+                    success: function()
+                    {
+                        $("#dotfile-network").html(Viz('<?=str_replace("\n", " ", $dotfile);?>', { engine: "circo" }));
+                    }
+                });
+                </script>
+            </div>
+        <?php
+        }
+        ?>
             <div class="clearfix" style="height:40px"></div>
 
             <div class="row" id="index_net_and_log" style="display:none">
