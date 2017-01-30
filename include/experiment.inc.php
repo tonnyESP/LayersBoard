@@ -187,7 +187,7 @@ class Experiment
         return $toReturn;    
     }
 
-    /*
+   /*
     ** Starts running the experiment in Layers
     ** Retrieves the PID to save it into the database
     */
@@ -204,9 +204,14 @@ class Experiment
         //exec("layers ".$experiment_path."netfile.net 2>/dev/null & echo $!", $pid);
         exec("layers ".$experiment_path."/netfile.net > /dev/null 2>/dev/null & echo $!", $pid);
 
-        $this->UpdatePID($pid[0]);
+        // After running layers, a #NetName.dot will be generated, we move it to $experiment_path folder
+        foreach (glob("*.dot") as $dotfile) {
+            rename ($dotfile, $experiment_path.'/'.$dotfile);
+        }
 
-    }
+
+        $this->UpdatePID($pid[0]);
+    } 
 
     /*
     ** Assign a given PID to an experiment
@@ -299,6 +304,25 @@ class Experiment
         global $layersBoardPath;
 
         return $layersBoardPath."/Experiments/".$this->name;
+    }
+
+    /*
+    ** Returns .dot file created by layers. Used to show network topology
+    */
+    private function GetDotFileContents()
+    {
+        global $layersBoardPath;
+
+        $experiment_path = $layersBoardPath."/Experiments/".$this->name;
+
+        // After running layers, a #NetName.dot will be generated, we move it to $experiment_path folder
+        foreach (glob($experiment_path."/*.dot") as $dotfile) 
+        {
+            $toReturn = file_get_contents($dotfile, FILE_USE_INCLUDE_PATH);
+
+            return $toReturn
+        }
+
     }
 
     // Recursively assigns experiment name
