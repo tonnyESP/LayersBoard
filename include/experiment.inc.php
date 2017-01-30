@@ -320,7 +320,7 @@ class Experiment
         {
             $toReturn = file_get_contents($dotfile, FILE_USE_INCLUDE_PATH);
 
-            return $toReturn
+            return $toReturn;
         }
 
     }
