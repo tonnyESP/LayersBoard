@@ -840,7 +840,7 @@ class Experiment
         <?php
         if($IsFinished)
             { ?>
-                <button class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</button>
+                <a href="services/download-experiment-zip.php?experiment_id=<?=$this->id;?>" target="_blank" class="btn btn-primary" id="download_output"><span class="glyphicon glyphicon-compressed"></span> Download output</a>
             <?php
             } ?>
                 <button class="btn btn-danger" id="delete_experiment"><span class="glyphicon glyphicon-trash"></span> Remove experiment</button>  
