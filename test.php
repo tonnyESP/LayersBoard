@@ -8,6 +8,7 @@ require("include/template/header.inc.php");
     border: 1px solid gray;
     height: 168px;
     width: 168px;
+    cursor: crosshair;
 }
 #pixels{
     width: 196px;

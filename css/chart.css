@@ -13,7 +13,7 @@ body {
   background: #fcfcfc;
   border: 1px solid #ccc;
   border-radius: 2px;
-  box-shadow: 0px 1px 1px 1px #ccc;
+  box-shadow: 0px 1px 1px 1px #ccc, 0 10px 20px rgba(0, 0, 0, 0.2)
 }
 
 .statChartHolder {

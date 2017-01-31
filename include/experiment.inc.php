@@ -912,7 +912,7 @@ class Experiment
                     dataType: "script",
                     success: function()
                     {
-                        $("#dotfile-network").html(Viz('<?=str_replace("\n", " ", $dotfile);?>', { engine: "circo" }));
+                        $("#dotfile-network").html(Viz('<?=str_replace("\n", " ", $dotfile);?>', { format: "png-image-element", engine: "circo" }));
                     }
                 });
                 </script>
