@@ -913,6 +913,8 @@ class Experiment
                     success: function()
                     {
                         $("#dotfile-network").html(Viz('<?=str_replace("\n", " ", $dotfile);?>', { format: "png-image-element", engine: "circo" }));
+                        $("#dotfile-network > img").css( "max-width", "100%" );
+                        $("#dotfile-network > img").css( "height", "auto" );
                     }
                 });
                 </script>
