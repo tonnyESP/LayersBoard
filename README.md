@@ -26,6 +26,10 @@ I recommend you to create a [Google Cloud Account](https://cloud.google.com/), c
 
 > cd ../..
 
+- __ALL THE COMMANDS BEHIND: COPY & PASTE__
+
+> sudo apt-get update; sudo apt-get install -y make; sudo apt-get install -y g++; sudo apt-get install -y flex; sudo apt-get install -y bison; git clone https://github.com/RParedesPalacios/Layers.git; cd Layers/src ; sudo make ; sudo cp layers /usr/bin ; cd ../.. ;
+
 ## Setting up LayersBoard workspace
 
 > mkdir LayersBoard
@@ -66,7 +70,12 @@ I recommend you to create a [Google Cloud Account](https://cloud.google.com/), c
 
 > wget --output-document=test http://users.dsic.upv.es/~rparedes/DeepLearning/data/MIT/test64x64.bin
 
-> cd ../..
+> cd ../../..
+
+- __ALL THE COMMANDS BEHIND: COPY & PASTE__
+
+> mkdir LayersBoard; mkdir LayersBoard/Experiments; mkdir LayersBoard/Datasets; mkdir LayersBoard/Datasets/MNIST; mkdir LayersBoard/Datasets/CIFAR-10; mkdir LayersBoard/Datasets/CIFAR-100; mkdir LayersBoard/Datasets/MIT-UrbanNatural; cd LayersBoard/Datasets/MNIST; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/MNIST/training; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/MNIST/test; cd ../CIFAR-10; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/CIFAR/training; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/CIFAR/test; cd ../CIFAR-100; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/CIFAR-100/training; wget http://users.dsic.upv.es/~rparedes/DeepLearning/data/CIFAR-100/test; cd ../MIT-UrbanNatural; wget --output-document=training http://users.dsic.upv.es/~rparedes/DeepLearning/data/MIT/train64x64.bin; wget --output-document=test http://users.dsic.upv.es/~rparedes/DeepLearning/data/MIT/test64x64.bin; cd ../../.. ; 
+
 
 ## Installing LAMP server
 > sudo apt-get update
@@ -85,9 +94,9 @@ I recommend you to create a [Google Cloud Account](https://cloud.google.com/), c
 
 > sudo usermod -a -G www-data $$YOUR_USERNAME$$
 
-> sudo chgrp www-data LayersBoard
+> sudo chgrp www-data LayersBoard -R
 
-> sudo chmod g+rwxs LayersBoard
+> sudo chmod g+rwxs LayersBoard -R
 
 ### To be able to manage your SQL from phpmyadmin
 - Edit */etc/apache2/apache2.conf* file and include phpmyadmin line at the end of it
@@ -114,7 +123,7 @@ I recommend you to create a [Google Cloud Account](https://cloud.google.com/), c
 
 > CREATE USER 'layers'@'localhost' IDENTIFIED BY 'layers123';
 
-> REVOKE ALL PRIVILEGES ON *.* FROM 'layers'@'localhost'; REVOKE GRANT OPTION ON *.* FROM 'layers'@'localhost'; GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'layers'@'localhost' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+> REVOKE ALL PRIVILEGES ON *.* FROM 'layers'@'localhost'; REVOKE GRANT OPTION ON *.* FROM 'layers'@'localhost'; GRANT SELECT, INSERT, UPDATE, DELETE, FILE ON *.* TO 'layers'@'localhost' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
 
 > CREATE DATABASE layers;
 
