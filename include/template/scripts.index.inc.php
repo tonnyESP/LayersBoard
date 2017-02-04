@@ -14,7 +14,13 @@
                       DeleteExperiment(<?=$exp_id;?>); 
                   });
 
-
+                $("#stop_training").off("click");
+                $("#stop_training").on("click", function() 
+                  { 
+                    var confirmation = confirm("Are you sure you want to stop this experiment?")
+                    if( confirmation )
+                      StopTraining(<?=$exp_id;?>); 
+                  });
        
 
                 $("#show_net_and_log").off("click");

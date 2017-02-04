@@ -543,6 +543,16 @@ class Experiment
         return false;
     }
 
+    public function StopProcess()
+    {
+        global $user_id;
+
+        // Gets all current pids from layers instances 
+        exec("kill -9 ".$this->process_id, $return);
+
+        return true;
+    }
+
     public function RenderTerminalLog()
     {
         global $layersBoardPath;

@@ -53,6 +53,19 @@ require("include/config.php");
           alert("Error " + result);
       });
     }
+    function StopTraining(id)
+    {
+      $.post("services/stop-training.php", {
+        experiment_id: id
+      },
+      function(result) 
+      {
+        if (result == "ok")
+          window.location.href = 'index.php?experiment_id=' + id;
+        else
+          alert("Error " + result);
+      });
+    }
     function ForkExperiment(id)
     {
       window.location.href = 'new.php?experiment_id=' + id;
