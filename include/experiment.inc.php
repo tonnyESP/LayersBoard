@@ -550,7 +550,14 @@ class Experiment
         // Gets all current pids from layers instances 
         exec("kill -9 ".$this->process_id, $return);
 
-        return true;
+
+        if( !$this->IsRunning() )
+        {
+            $this->UpdatePID(0);
+            return true;
+        }
+        else
+            return false;
     }
 
     public function RenderTerminalLog()
